@@ -56,6 +56,15 @@ class CursosController extends Controller
 
     public function show($id)
     {
+        $validator = validator(['id' => $id], [
+            'id' => 'required|numeric'
+            
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        
         try {
             $curso = Cursos::findOrFail($id);
 
@@ -109,6 +118,15 @@ class CursosController extends Controller
 
     public function destroy($id)
     {
+        $validator = validator(['id' => $id], [
+            'id' => 'required|numeric'
+            
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         try {
             $curso = Cursos::findOrFail($id);
             if($curso->status){

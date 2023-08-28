@@ -124,9 +124,6 @@ class AsistenciasController extends Controller
         }
     }
 
-
-
-
     public function destroy(Request $request)
     {
         $validator = validator($request->all(), [

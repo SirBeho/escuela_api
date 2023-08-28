@@ -54,6 +54,15 @@ class DocentesController extends Controller
 
     public function show($id)
     {
+        $validator = validator(['id' => $id], [
+            'id' => 'required|numeric'
+            
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        
         try {
             $Docente = Docentes::findOrFail($id);
 
@@ -110,6 +119,15 @@ class DocentesController extends Controller
 
     public function destroy($id)
     {
+        $validator = validator(['id' => $id], [
+            'id' => 'required|numeric'
+            
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         try {
             $curso = Docentes::findOrFail($id);
             if ($curso->status) {
