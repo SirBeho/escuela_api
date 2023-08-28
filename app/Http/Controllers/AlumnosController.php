@@ -56,8 +56,8 @@ class AlumnosController extends Controller
         
         try {
             $alumno = Alumnos::findOrFail($id);
-           
-             return $alumno;
+            $alumno->load('selecciones.curso');
+            return $alumno;
 
             return response()->json($alumno);
         } catch (ModelNotFoundException $e) {
@@ -67,9 +67,10 @@ class AlumnosController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = validator($request->all(), [
+            'id' => 'required|numeric',
             'nombre' => 'required',
             'apellido' => 'required',
             'email' => 'required|email',
@@ -81,7 +82,7 @@ class AlumnosController extends Controller
         }
 
         try {
-            $alumno = Alumnos::findOrFail($id);
+            $alumno = Alumnos::findOrFail($request->id);
             $alumno->nombre = $request->nombre;
             $alumno->apellido = $request->apellido;
             $alumno->email = $request->email;
@@ -90,7 +91,7 @@ class AlumnosController extends Controller
     
             return response()->json(['msj' => 'Alumno actualizado correctamente'], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El alumno ' . $request->id.' no existe no fue encontrado'], 404);
         } catch (QueryException  $e) {
             $errormsj = $e->getMessage();
 

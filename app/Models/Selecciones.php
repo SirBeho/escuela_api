@@ -10,8 +10,14 @@ class Selecciones extends Model
 {
     use HasFactory;
 
-    public function alumnos(): BelongsTo
+    public function alumno() :belongsTo
     {
-        return $this->belongsTo(Alumnos::class);
+        return $this->belongsTo(Alumnos::class, 'alumno_id');
     }
+
+    public function curso() :belongsTo
+    {
+        return $this->belongsTo(Cursos::class, 'curso_id');
+    }
+
 }

@@ -14,10 +14,7 @@ class DocentesController extends Controller
     public function index()
     {
         $docentes = Docentes::where('status', 1)->get();
-        foreach ($docentes as $docente) {
-
-            $docente->cursos;
-        }
+        $docentes->load('cursos');
         return $docentes;
     }
 
@@ -70,9 +67,10 @@ class DocentesController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = validator($request->all(), [
+            'id' => 'required|numeric',
             'nombre' => 'required',
             'apellido' => 'required',
             'email' => 'required|email',
@@ -84,7 +82,7 @@ class DocentesController extends Controller
         }
 
         try {
-            $Docente = Docentes::findOrFail($id);
+            $Docente = Docentes::findOrFail($request->id);
             $Docente->nombre = $request->nombre;
             $Docente->apellido = $request->apellido;
             $Docente->email = $request->email;
@@ -93,7 +91,7 @@ class DocentesController extends Controller
 
             return response()->json(['msj' => 'Docente actualizado correctamente'], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El docente ' . $id . ' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El docente ' . $request->id . ' no existe no fue encontrado'], 404);
         } catch (QueryException  $e) {
             $errormsj = $e->getMessage();
 

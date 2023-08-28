@@ -70,9 +70,10 @@ class CursosController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = validator($request->all(), [
+            'id' => 'required|numeric',
             'nombre' => 'required',
             'docente_id' => 'required|exists:docentes,id',
         ]);
@@ -80,16 +81,16 @@ class CursosController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+        
         try {
-            $curso = Cursos::findOrFail($id);
+            $curso = Cursos::findOrFail($request->id);
             $curso->nombre = $request->nombre;
             $curso->docente_id = $request->docente_id;
             $curso->save();
 
             return response()->json(['message' => 'Curso actualizado correctamente'], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El curso ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El curso ' . $request->id.' no existe no fue encontrado'], 404);
         } catch (QueryException $e) {
             $errormsj = $e->getMessage();
 

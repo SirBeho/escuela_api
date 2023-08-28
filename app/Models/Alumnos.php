@@ -11,9 +11,9 @@ class Alumnos extends Model
     use HasFactory;
 
 
-    public function cursos(): HasMany
+    public function selecciones(): HasMany
     {
-        return $this->hasMany(Selecciones::class);
+        return $this->hasMany(Selecciones::class,'alumno_id');
     }
   
 }
