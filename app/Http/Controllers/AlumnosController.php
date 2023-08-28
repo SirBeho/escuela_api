@@ -53,8 +53,12 @@ class AlumnosController extends Controller
  
     public function show($id)
     {
+        
         try {
             $alumno = Alumnos::findOrFail($id);
+           
+             return $alumno;
+
             return response()->json($alumno);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
@@ -106,12 +110,16 @@ class AlumnosController extends Controller
     public function destroy($id)
     {
         try {
-            $alumno = Alumnos::findOrFail($id);
-            $alumno->status = 0; 
-            $alumno->save();
-            return response()->json(['msj' => 'Alumno eliminado correctamente'], 200);
+            $curso = Alumnos::findOrFail($id);
+            if($curso->status){
+                $curso->status = 0; 
+                $curso->save();
+                return response()->json(['msj' => 'Alumno eliminado correctamente'], 200);
+            }
+            return response()->json(['msj' => 'Este Alumno ya ha sido eliminado'], 200);
+           
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El Alumno ' . $id.' no existe no fue encontrado'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         }

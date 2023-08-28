@@ -10,10 +10,15 @@ use Illuminate\Http\Request;
 
 class DocentesController extends Controller
 {
-  
+
     public function index()
     {
-        return Docentes::where('status', 1)->get();
+        $docentes = Docentes::where('status', 1)->get();
+        foreach ($docentes as $docente) {
+
+            $docente->cursos;
+        }
+        return $docentes;
     }
 
     public function create(Request $request)
@@ -23,40 +28,43 @@ class DocentesController extends Controller
             'apellido' => 'required',
             'email' => 'required|email',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-    
+
         try {
-            $alumno = new Docentes();
-            $alumno->nombre = $request->nombre;
-            $alumno->apellido = $request->apellido;
-            $alumno->email = $request->email;
-            $alumno->save();
-    
-            return "Registro ".$request->nombre." añadido satisfactoriamente";
+            $Docente = new Docentes();
+            $Docente->nombre = $request->nombre;
+            $Docente->apellido = $request->apellido;
+            $Docente->email = $request->email;
+            $Docente->save();
+
+            return "Registro " . $request->nombre . " añadido satisfactoriamente";
         } catch (QueryException  $e) {
             $errormsj = $e->getMessage();
 
             if (strpos($errormsj, 'Duplicate entry') !== false) {
                 preg_match("/Duplicate entry '(.*?)' for key/", $errormsj, $matches);
                 $duplicateValue = $matches[1] ?? 'Tienes un valor que';
-    
-                return response()->json(['error' =>'Error: '. $duplicateValue.' ya esta en uso'], 422);
+
+                return response()->json(['error' => 'Error: ' . $duplicateValue . ' ya esta en uso'], 422);
             }
-    
+
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         }
     }
- 
+
     public function show($id)
     {
         try {
-            $alumno = Docentes::findOrFail($id);
-            return response()->json($alumno);
+            $Docente = Docentes::findOrFail($id);
+
+            $Docente->cursos;
+
+            return $Docente;
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El alumno ' . $id . ' no existe no fue encontrado'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         }
@@ -70,51 +78,52 @@ class DocentesController extends Controller
             'email' => 'required|email',
             'status' => 'required|boolean',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
         try {
-            $alumno = Docentes::findOrFail($id);
-            $alumno->nombre = $request->nombre;
-            $alumno->apellido = $request->apellido;
-            $alumno->email = $request->email;
-            $alumno->status = $request->status;; 
-            $alumno->save();
-    
-            return response()->json(['msj' => 'Alumno actualizado correctamente'], 200);
+            $Docente = Docentes::findOrFail($id);
+            $Docente->nombre = $request->nombre;
+            $Docente->apellido = $request->apellido;
+            $Docente->email = $request->email;
+            $Docente->status = $request->status;;
+            $Docente->save();
+
+            return response()->json(['msj' => 'Docente actualizado correctamente'], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El docente ' . $id . ' no existe no fue encontrado'], 404);
         } catch (QueryException  $e) {
             $errormsj = $e->getMessage();
 
             if (strpos($errormsj, 'Duplicate entry') !== false) {
                 preg_match("/Duplicate entry '(.*?)' for key/", $errormsj, $matches);
                 $duplicateValue = $matches[1] ?? 'Tienes un valor que';
-    
-                return response()->json(['error' =>'Error: '. $duplicateValue.' ya esta en uso'], 422);
+
+                return response()->json(['error' => 'Error: ' . $duplicateValue . ' ya esta en uso'], 422);
             }
-    
+
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         } catch (Exception $e) {
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         }
     }
-    
+
     public function destroy($id)
     {
         try {
-            $alumno = Docentes::findOrFail($id);
-            $alumno->status = 0; 
-            $alumno->save();
-            return response()->json(['msj' => 'Alumno eliminado correctamente'], 200);
+            $curso = Docentes::findOrFail($id);
+            if ($curso->status) {
+                $curso->status = 0;
+                $curso->save();
+                return response()->json(['msj' => 'Docente eliminado correctamente'], 200);
+            }
+            return response()->json(['msj' => 'Este Docente ya ha sido eliminado'], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'El alumno ' . $id.' no existe no fue encontrado'], 404);
+            return response()->json(['error' => 'El Docente ' . $id . ' no existe no fue encontrado'], 404);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error en la acción realizada'], 500);
         }
     }
-       
-    
 }

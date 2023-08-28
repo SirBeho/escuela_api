@@ -12,7 +12,12 @@ class CursosController extends Controller
 {
     public function index()
     {
-        return Cursos::where('status', 1)->get();
+        $cursos = Cursos::where('status', 1)->get();
+        foreach ($cursos as $curso) {
+
+          $curso->docente;
+        }
+        return $cursos;
     }
 
     public function create(Request $request)
@@ -53,6 +58,10 @@ class CursosController extends Controller
     {
         try {
             $curso = Cursos::findOrFail($id);
+
+            $curso->docente;
+            return $curso;
+
             return response()->json($curso);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'El curso ' . $id.' no existe no fue encontrado'], 404);
@@ -106,7 +115,7 @@ class CursosController extends Controller
                 $curso->save();
                 return response()->json(['msj' => 'Curso eliminado correctamente'], 200);
             }
-            return response()->json(['msj' => 'Este Curso ya habia sido eliminado'], 200);
+            return response()->json(['msj' => 'Este Curso ya ha sido eliminado'], 200);
            
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'El Curso ' . $id.' no existe no fue encontrado'], 404);
