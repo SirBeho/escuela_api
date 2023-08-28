@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('cursos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre')->unique();
             $table->unsignedBigInteger('docente_id');
+            $table->tinyInteger('status')->default(1);
             $table->foreign('docente_id')->references('id')->on('docentes');
             $table->timestamps();
         });
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->foreign('alumno_id')->references('id')->on('alumnos');
             $table->foreign('curso_id')->references('id')->on('cursos');
             $table->timestamps();
+            $table->unique(['alumno_id', 'curso_id']);
         });
 
     }

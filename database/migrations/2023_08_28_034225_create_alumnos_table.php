@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('email')->unique();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
         });
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellido');
             $table->string('email')->unique();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
         });
